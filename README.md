@@ -15,5 +15,5 @@ FROM alpine
 
 COPY --from=tiny-curl /build /usr/local
 
-CMD curl --help
+CMD ["curl", "--help"]
 ```
