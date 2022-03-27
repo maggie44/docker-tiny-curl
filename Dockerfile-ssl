@@ -1,0 +1,36 @@
+FROM alpine:3.15 as build
+
+RUN apk add autoconf automake build-base m4 perl --no-cache
+
+# Build and install WolfSSL
+WORKDIR /app/wolfssl
+
+COPY wolfssl .
+RUN tar -xf *.tar.gz --strip-components=1
+
+RUN ./configure
+RUN make
+RUN make install
+
+# Build Tiny-Curl
+WORKDIR /app/curl
+
+COPY tiny-curl .
+RUN tar -xf *.tar.gz --strip-components=1
+
+COPY config/config-wolfssl.sh config.sh
+
+RUN sh config.sh
+RUN make
+RUN make install
+
+RUN mkdir -p /build/bin /build/lib
+
+RUN cp /usr/local/bin/curl /build/bin/
+RUN cp /usr/local/lib/libcurl.so.4 /build/lib/
+
+RUN cp /usr/local/lib/libwolfssl.so.32 /build/lib/
+
+FROM scratch
+
+COPY --from=build /build /

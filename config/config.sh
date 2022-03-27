@@ -75,5 +75,4 @@ export LDFLAGS="-Wl,-s -Wl,-Bsymbolic -Wl,--gc-sections"
 --without-ntlm-auth \
 --without-ssl \
 --without-zlib \
---without-zstd \
---prefix=/app/build
+--without-zstd
